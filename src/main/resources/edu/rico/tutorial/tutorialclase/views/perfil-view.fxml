@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="edu.rico.tutorial.tutorialclase.controllers.PerfilController">
+
+    <TextField fx:id="txtNombre"
+               promptText="Nombre de usuario"
+               onKeyReleased="#onNombreModificado"/>
+
+    <Slider fx:id="sldRadio"
+            min="20"
+            max="100"
+            value="40"
+            onMouseReleased="#onSliderModificado"/>
+
+    <TextField fx:id="txtRadio"
+               onAction="#actualizarRadioDesdeTexto"/>
+
+    <ColorPicker fx:id="colorPicker"
+                 onAction="#cambiarColor"/>
+
+    <Circle fx:id="circlePreview"
+            radius="40"/>
+
+    <Label fx:id="lblEstado"/>
+
+    <Button fx:id="btnGuardar"
+            text="Guardar"
+            onAction="#guardarConfiguracion"/>
+
+</VBox>

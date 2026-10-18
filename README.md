@@ -1,116 +1,376 @@
-# 🏢 Sistema de Gestión Empresarial - JavaFX, FXML & JPMS
+Hazme un README.md para este proyecto en markdown
+Copilot said:
 
-![Java 21](https://img.shields.io/badge/Java-21%2B-orange.svg)
-![JavaFX](https://img.shields.io/badge/JavaFX-21.0.2-blue.svg)
-![Maven](https://img.shields.io/badge/Maven-Build-brightgreen.svg)
-![JPMS](https://img.shields.io/badge/Architecture-JPMS%20Modular-purple.svg)
-![Theme](https://img.shields.io/badge/UI%20Theme-AtlantaFX%20PrimerDark-darkgreen.svg)
 
-Bienvenido a la plantilla arquitectónica de desarrollo de aplicaciones de escritorio empresariales construida sobre **Java 21**, **JavaFX 21+**, **Apache Maven** y el sistema de módulos **JPMS**.
 
-Este repositorio contiene la implementación paso a paso de los **Módulos 1, 2 y 3**, diseñados bajo los principios de **separación estricta de responsabilidades (MVC/MVVM)**, **programación reactiva pura mediante JavaFX Bindings** y un **sistema de navegación desacoplado**.
+# Tutorial JavaFX - Programación Imperativa
+
+Proyecto didáctico orientado a la enseñanza de **JavaFX con programación imperativa**, utilizando **FXML**, **CSS**, **Maven** y **JPMS (Java Platform Module System)**.
+
+El objetivo principal es que el alumnado comprenda primero la arquitectura de una aplicación JavaFX, la gestión de eventos y la manipulación manual de la interfaz antes de introducir conceptos más avanzados como listeners, properties, bindings o programación reactiva. 【1-6c8373】
 
 ---
 
-## 📐 Arquitectura y Estructura del Proyecto
+# Índice
 
-El proyecto sigue la convención estándar de construcción de Apache Maven e integra la fuerte encapsulación del **Java Platform Module System (JPMS)** con el paquete fuente principal `edu.rico.tutorial.tutorialclase`.
+- [Objetivos del proyecto](#objetivos-del-proyecto)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Arquitectura del proyecto](#arquitectura-del-proyecto)
+- [Módulo 1. Infraestructura y configuración](#módulo-1-infraestructura-y-configuración)
+- [Módulo 2. Programación imperativa con JavaFX](#módulo-2-programación-imperativa-con-javafx)
+- [Módulo 3. Navegación y coordinación de vistas](#módulo-3-navegación-y-coordinación-de-vistas)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Ejecución del proyecto](#ejecución-del-proyecto)
+- [Conceptos didácticos trabajados](#conceptos-didácticos-trabajados)
+- [Programación imperativa vs reactiva](#programación-imperativa-vs-reactiva)
+- [Requisitos](#requisitos)
+- [Autor](#autor)
+
+---
+
+# Objetivos del proyecto
+
+Este proyecto pretende enseñar:
+
+- Arquitectura JavaFX moderna.
+- Uso correcto de Maven.
+- Modularización mediante JPMS.
+- Comprensión de FXMLLoader.
+- Uso de FXML para separar presentación y lógica.
+- Uso de CSS para desacoplar los estilos.
+- Programación basada en eventos.
+- Navegación entre vistas.
+- Diseño de aplicaciones escalables. 【1-6c8373】
+
+---
+
+# Tecnologías utilizadas
+
+- Java 21
+- JavaFX
+- Maven
+- JPMS (Java Platform Module System)
+- FXML
+- CSS
+- Scene Builder
+- AtlantaFX Theme
+- IntelliJ IDEA 【1-6c8373】
+
+---
+
+# Arquitectura del proyecto
+
+El proyecto se apoya en una clara separación de responsabilidades:
 
 ```text
-edu.rico.tutorial.tutorialclase
-├── Launcher.java                       <-- Punto de entrada secundario (Classpath Fallback)
-├── App.java                            <-- Clase Application JavaFX con ClassLoader seguro
-├── controllers/
-│   ├── MainLayoutController.java       <-- Control del layout principal y menú
-│   └── PerfilController.java           <-- Control reactivo del configurador de avatar
-├── navigation/
-│   ├── NavigationManager.java          <-- Coordinador de navegación Singleton Reactivo
-│   └── ViewType.java                   <-- Enum de rutas FXML y títulos tipados
-└── resources/
-    └── edu/rico/tutorial/tutorialclase/
-        ├── views/
-        │   ├── main-layout.fxml        <-- Marco contenedor (BorderPane + MenuBar + ToolBar)
-        │   └── perfil-view.fxml        <-- Formulario FXML del configurador de perfil
-        └── styles/
-            └── theme.css               <-- Hoja de estilos CSS externa personalizada
+┌─────────────────────┐
+│        FXML         │
+│      (Vista)        │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│     Controller      │
+│   (Lógica UI)       │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│       Modelo        │
+│      (Datos)        │
+└─────────────────────┘
 ```
 
-## 🛠️ Resumen de Módulos Implementados
+FXML define la interfaz, CSS define la apariencia y el controlador contiene la lógica de interacción. 【1-6c8373】
 
-### 🔹 Módulo 1: Cimientos de la Infraestructura & JPMS
+---
 
-1. **Configuración de Apache Maven (pom.xml):** Gestión de dependencias de JavaFX (`javafx-controls`, `javafx-fxml`), el tema visual **AtlantaFX** (`atlantafx-base`) y automatización del ciclo de vida con `javafx-maven-plugin`.
-2. **Encapsulación Fuerte con JPMS (module-info.java):** Reglas explícitas de reflexión (`opens ... to javafx.fxml`) para permitir que `FXMLLoader` instancie los controladores sin violar la seguridad del runtime de Java.
-3. **Garantía de Carga de Recursos:** Uso del método `loader.setClassLoader(getClass().getClassLoader())` para prevenir fallos de resolución de paths `.fxml` en entornos modulares.
-4. **Patrón Launcher:** Creación de una clase contenedora desacoplada para evitar bloqueos del ejecutable JAR.
+# Módulo 1. Infraestructura y configuración
 
-### 🔹 Módulo 2: Vista Declarativa FXML & Programación Reactiva
+En este módulo se construyen los cimientos de la aplicación.
 
-1. **Separación Total de Capas:** Vista totalmente declarativa en FXML (`perfil-view.fxml`) y estilos desacoplados en CSS (`theme.css`), proscribiendo el uso de `.setStyle()` en código Java.
-2. **Eliminación de Manejadores Imperativos:** Se eliminan los escuchadores de eventos manuales (`onKeyTyped`, `setOnAction`) en favor del **JavaFX Binding API**.
-3. **Bindings Bidireccionales y Unidireccionales:** Sincronización automática entre un `Slider` y un `TextField` mediante `NumberStringConverter`, vinculación directa con el radio y color de un `Circle`, y evaluación reactiva de reglas de negocio (`BooleanBinding`) para habilitar/deshabilitar botones.
+## Contenidos
 
-### 🔹 Módulo 3: Coordinador de Navegación Empresarial Reactivo
+### Maven
 
-1. **Patrón Coordinador (NavigationManager):** Centralización de la navegación mediante un Singleton que reemplaza dinámicamente el área central (`center`) de un contenedor `BorderPane`.
-2. **Seguridad de Tipos con ViewType:** Uso de Enums para gestionar las rutas FXML y títulos de vista, eliminando cadenas de texto mágicas.
-3. **Sincronización Reactiva de UI:** Exposición de una propiedad observable `ReadOnlyObjectProperty<ViewType>` que actualiza automáticamente el título del encabezado y deshabilita el botón de la vista activa en el menú de navegación.
+Se utiliza Maven para:
 
-## 🚀 Requisitos Previos y Ejecución
+- Gestión de dependencias.
+- Compilación.
+- Empaquetado.
+- Ejecución con JavaFX. 【1-6c8373】
 
-### Requisitos
+### JPMS
 
-- **Java Development Kit (JDK):** Versión 21 o superior.
-- **Apache Maven:** Versión 3.8+ (o el wrapper integrado del IDE).
-- **IDE Recomendado:** JetBrains IntelliJ IDEA con el plugin de Scene Builder configurado.
-
-### Comandos de Ejecución desde Terminal
-
-#### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/ricoldinho/git@github.com:ricoldinho/tutorialJavaFx.git
-cd TU_REPOSITORIO
-```
-
-#### 2. Compilar el proyecto
-
-```bash
-mvn clean compile
-```
-
-#### 3. Ejecutar la aplicación con el plugin oficial de JavaFX
-
-```bash
-mvn javafx:run
-```
-
-## 🎨 Estilo y Apariencia Visual
-
-La aplicación utiliza el tema oscuro moderno **AtlantaFX (PrimerDark)** aplicado de forma global en el arranque de la aplicación:
+Se introduce el sistema modular de Java mediante:
 
 ```java
-Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+module edu.rico.tutorial.tutorialclase {
+    requires javafx.controls;
+    requires javafx.fxml;
+
+    opens edu.rico.tutorial.tutorialclase.controllers
+        to javafx.fxml;
+
+    exports edu.rico.tutorial.tutorialclase;
+}
 ```
 
-Toda la personalización estética de componentes se gestiona en:
+JPMS aporta encapsulación, seguridad y compatibilidad con herramientas como `jlink`. 【1-6c8373】
 
-```text
-/resources/edu/rico/tutorial/tutorialclase/styles/theme.css
-```
+### FXMLLoader
 
-## 📝 Licencia
+Se estudia:
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+- Carga de archivos FXML.
+- Inyección de controles mediante `@FXML`.
+- Asociación de eventos.
+- Uso de reflexión en JavaFX. 【1-6c8373】
 
 ---
 
-## 📚 Explicación Didáctica de las Decisiones Adoptadas
+# Módulo 2. Programación imperativa con JavaFX
 
-Nos gustaría resaltar ante sus alumnos tres puntos clave que hemos plasmado en esta documentación:
+Este módulo elimina completamente el enfoque reactivo utilizado habitualmente en JavaFX y se centra en programación imperativa clásica. 【1-6c8373】
 
-1. **Delegación de ClassLoader:** Como explicamos en el Módulo 1, recalcar la instrucción `loader.setClassLoader(...)` en el `README.md` ayuda a recordar la importancia de alinear los cargadores de clases del módulo de la aplicación con los del deserializador de FXML.
+## Principio fundamental
 
-2. **El poder de los Bindings:** Destacar el Módulo 2 ayuda a comprender la diferencia paradigmática entre ir a buscar un valor a la pantalla manualmente vs. **declarar una regla matemática o lógica** que se evalúa de forma perezosa (*lazy evaluation*) cuando una propiedad cambia.
+```text
+Evento
+   ↓
+Método @FXML
+   ↓
+Procesamiento
+   ↓
+Actualización manual de la interfaz
+```
 
-3. **Escalabilidad del Coordinador de Navegación:** Explicar el Módulo 3 demuestra cómo el `NavigationManager` permite añadir nuevas pantallas (como las que se implementarán en los módulos posteriores) agregando únicamente una constante al enum `ViewType`, sin modificar el marco visual ni el controlador del menú principal.
+No se utilizan:
+
+- Bindings
+- Properties
+- ObservableValue
+- BooleanBinding
+- Programación reactiva 【1-6c8373】
+
+---
+
+## Vista FXML
+
+Los eventos se declaran directamente en el archivo FXML:
+
+```xml
+<TextField
+    fx:id="txtNombre"
+    onKeyReleased="#onNombreModificado"/>
+
+<Slider
+    fx:id="sldRadio"
+    onMouseReleased="#onSliderModificado"/>
+
+<ColorPicker
+    fx:id="colorPicker"
+    onAction="#cambiarColor"/>
+```
+
+---
+
+## Flujo de trabajo
+
+```text
+Usuario mueve el Slider
+          ↓
+FXML llama a onSliderModificado()
+          ↓
+Leer valor actual
+          ↓
+Actualizar TextField
+          ↓
+Actualizar Circle
+          ↓
+Actualizar Label
+          ↓
+Validar formulario
+```
+
+Este flujo permite comprender claramente la relación causa-efecto dentro de una interfaz gráfica. 【1-6c8373】
+
+---
+
+# Módulo 3. Navegación y coordinación de vistas
+
+El proyecto implementa un sistema de navegación empresarial mediante un coordinador central.
+
+## Componentes
+
+### ViewType
+
+Enumeración que define las vistas disponibles.
+
+```java
+PERFIL
+DASHBOARD
+ESTADISTICAS
+```
+
+### NavigationManager
+
+Responsable de:
+
+- Cargar vistas.
+- Gestionar el contenedor principal.
+- Realizar la navegación.
+- Mantener el estado actual. 【1-6c8373】
+
+### MainLayoutController
+
+Coordina:
+
+- Menús.
+- Botones de navegación.
+- Títulos.
+- Cambio de vistas. 【1-6c8373】
+
+---
+
+# Estructura del proyecto
+
+```text
+src
+├── main
+│   ├── java
+│   │   └── edu
+│   │       └── rico
+│   │           └── tutorial
+│   │               └── tutorialclase
+│   │                   ├── controllers
+│   │                   ├── navigation
+│   │                   ├── model
+│   │                   ├── App.java
+│   │                   └── Launcher.java
+│   │
+│   └── resources
+│       └── edu
+│           └── rico
+│               └── tutorial
+│                   └── tutorialclase
+│                       ├── views
+│                       └── styles
+│
+└── pom.xml
+```
+
+---
+
+# Ejecución del proyecto
+
+## Desde IntelliJ IDEA
+
+1. Abrir el proyecto.
+2. Permitir que Maven descargue las dependencias.
+3. Verificar que se utiliza Java 21.
+4. Abrir la ventana Maven.
+5. Ejecutar:
+
+```text
+Plugins
+ └─ javafx
+     └─ javafx:run
+```
+
+【1-6c8373】
+
+---
+
+# Conceptos didácticos trabajados
+
+## JavaFX
+
+- Scene
+- Stage
+- Parent
+- Scene Graph
+- FXMLLoader
+- Controladores
+
+## Programación orientada a eventos
+
+- Eventos de teclado
+- Eventos de ratón
+- Eventos de acción
+- Métodos `@FXML`
+
+## Modularización
+
+- requires
+- exports
+- opens
+
+## Diseño de interfaces
+
+- FXML
+- CSS
+- Scene Builder
+
+【1-6c8373】
+
+---
+
+# Programación imperativa vs reactiva
+
+## Enfoque imperativo
+
+```java
+@FXML
+private void onSliderModificado() {
+
+    int radio = (int) sldRadio.getValue();
+
+    txtRadio.setText(String.valueOf(radio));
+
+    circlePreview.setRadius(radio);
+
+    actualizarEstado();
+
+    validarFormulario();
+}
+```
+
+### Ventajas
+
+- Fácil de seguir.
+- Ideal para principiantes.
+- Flujo explícito.
+- Similar a Swing. 【1-6c8373】
+
+---
+
+## Enfoque reactivo
+
+```java
+sldRadio.valueProperty()
+        .addListener(...);
+```
+
+### Ventajas
+
+- Menos código repetitivo.
+- Mayor automatización.
+- Escala mejor en aplicaciones complejas. 【1-6c8373】
+
+---
+
+# Requisitos
+
+- JDK 21 o superior
+- Maven 3.9+
+- IntelliJ IDEA (recomendado)
+- JavaFX SDK compatible con la versión utilizada 【1-6c8373】
+
+---
+
+# Autor
+
+**Manuel Rico López**
+
+Tutorial orientado a la enseñanza de JavaFX desde una perspectiva imperativa, poniendo el foco en la comprensión de la arquitectura de aplicaciones, los eventos y la separación de responsabilidades antes de introducir técnicas reactivas avanzadas. 【1-6c8373】
